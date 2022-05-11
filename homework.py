@@ -13,6 +13,7 @@ from exceptions import (HomeworkStatusException, NoHomeworkToCheck,
                         NoStatusChanges, PraktikumResponseError,
                         TelegramErrors)
 
+
 load_dotenv()
 
 
@@ -71,7 +72,7 @@ def check_response(response):
         message = f'отсутствует ключ homeworks в ответе: {response}'
         raise HomeworkStatusException(message)
     if homeworks == []:
-        message = 'в данный момент нет домашних заданий на проверке'
+        message = 'в данный момент изменений нет'
         raise NoHomeworkToCheck(message)
     return homeworks
 
@@ -139,6 +140,7 @@ def main():
             message = parse_status(homeworks[LAST_HOMEWORK_INDEX])
             cache_status = check_cnanges(bot, message, cache_status)
             logger.info(f'Сообщение отправлено: "{message}"')
+            current_timestamp = int(time.time())
         except PraktikumResponseError as error:
             logger.error(error)
             cache_status = check_cnanges(bot, error, cache_status)
@@ -156,7 +158,6 @@ def main():
             logger.error(message)
             cache_status = check_cnanges(bot, message, cache_status)
         finally:
-            current_timestamp += RETRY_TIME
             time.sleep(RETRY_TIME)
 
 
