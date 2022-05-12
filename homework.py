@@ -71,18 +71,14 @@ def parse_status(homework):
     if type(homework) is not dict:
         message = 'сведения о домашней работе не являются словарем'
         raise TypeError(message)
-    try:
-        homework_name = homework['homework_name']
-    except KeyError as error:
-        message = (f'отсутсвует поле с именем домашней работы , '
-                   f'в ответе API {error}')
+    if homework.get('homework_name') is None:
+        message = ('отсутсвует поле с именем домашней работы, в ответе API')
         raise KeyError(message)
-    try:
-        homework_status = homework['status']
-    except KeyError as error:
-        message = (f'отсутсвует поле со статусом домашней работы, '
-                   f'в ответе API {error}')
+    homework_name = homework['homework_name']
+    if homework.get('status') is None:
+        message = ('отсутсвует поле с статусом домашней работы, в ответе API')
         raise KeyError(message)
+    homework_status = homework['status']
     if homework['status'] not in HOMEWORK_STATUSES.keys():
         message = (f'недокументированный статус домашней работы, '
                    f'обнаруженный в ответе API {homework}')
